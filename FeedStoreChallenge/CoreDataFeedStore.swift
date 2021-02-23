@@ -12,6 +12,7 @@ import CoreData
 public class CoreDataFeedStore: FeedStore {
 
 	private let modelName = "CoreDataFeedStoreModel"
+	private let context: NSManagedObjectContext
 
 	public init(bundle: Bundle = .main) throws {
 
@@ -22,6 +23,8 @@ public class CoreDataFeedStore: FeedStore {
 		var loadError: Swift.Error?
 		container.loadPersistentStores { loadError = $1 }
 		try loadError.map { throw $0 }
+
+		context = container.newBackgroundContext()
 	}
 
 
