@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="19H524" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreDataCache" representedClassName="CoreDataCache" syncable="YES" codeGenerationType="class">
-        <attribute name="timeStamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="feed" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CoreDataFeedImage" inverseName="cache" inverseEntity="CoreDataFeedImage"/>
+        <attribute name="timeStamp" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="feed" toMany="YES" deletionRule="Cascade" destinationEntity="CoreDataFeedImage" inverseName="cache" inverseEntity="CoreDataFeedImage"/>
     </entity>
     <entity name="CoreDataFeedImage" representedClassName="CoreDataFeedImage" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
@@ -12,7 +12,7 @@
         <relationship name="cache" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataCache" inverseName="feed" inverseEntity="CoreDataCache"/>
     </entity>
     <elements>
-        <element name="CoreDataFeedImage" positionX="-63" positionY="-18" width="128" height="118"/>
         <element name="CoreDataCache" positionX="-54" positionY="-9" width="128" height="73"/>
+        <element name="CoreDataFeedImage" positionX="-63" positionY="-18" width="128" height="118"/>
     </elements>
 </model>
