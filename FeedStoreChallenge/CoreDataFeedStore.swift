@@ -12,25 +12,25 @@ import CoreData
 public class CoreDataFeedStore: FeedStore {
 	
 	private let context: NSManagedObjectContext
-
+	
 	public init(storeURL: URL) throws {
-
+		
 		let modelName = "CoreDataFeedStoreModel"
 		guard let modelUrl = Bundle(for: CoreDataFeedStore.self).url(forResource: modelName, withExtension: "momd"),
 			  let managedObjectModel = NSManagedObjectModel(contentsOf: modelUrl) else { throw NSError() }
-
+		
 		let description = NSPersistentStoreDescription(url: storeURL)
 		let container = NSPersistentContainer(name: modelName, managedObjectModel: managedObjectModel)
 		container.persistentStoreDescriptions = [description]
-
+		
 		var loadError: Swift.Error?
 		container.loadPersistentStores { loadError = $1 }
 		try loadError.map { throw $0 }
-
+		
 		context = container.newBackgroundContext()
 	}
-
-
+	
+	
 	public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
 		let context = self.context
 		context.perform {
@@ -42,7 +42,7 @@ public class CoreDataFeedStore: FeedStore {
 			}
 		}
 	}
-
+	
 	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
 		let context = self.context
 		context.perform {
@@ -65,7 +65,7 @@ public class CoreDataFeedStore: FeedStore {
 			}
 		}
 	}
-
+	
 	public func retrieve(completion: @escaping RetrievalCompletion) {
 		let context = self.context
 		context.perform {
