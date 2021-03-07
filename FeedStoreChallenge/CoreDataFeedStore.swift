@@ -49,27 +49,31 @@ public class CoreDataFeedStore: FeedStore {
 		}
 	}
 
-	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-		deleteCachedFeed { error in
-			guard nil == error else { return completion(error) }
-			let context = self.context
-			context.perform {
-				do {
-					let cache = CoreDataCache(context: context)
-					cache.timeStamp = timestamp
-					cache.feed = NSOrderedSet(array: feed.map { local in
-						let feed = CoreDataFeedImage(context: context)
-						feed.id = local.id
-						feed.imageDescription = local.description
-						feed.location = local.location
-						feed.url = local.url
-						return feed
-					})
-					try context.save()
-					completion(nil)
-				} catch {
-					completion(error)
+	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {		
+		let context = self.context
+		context.perform {
+			do {
+				
+				let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
+				request.returnsObjectsAsFaults = false
+				if let foundCache = try context.fetch(request).first {
+					context.delete(foundCache)
 				}
+				
+				let cache = CoreDataCache(context: context)
+				cache.timeStamp = timestamp
+				cache.feed = NSOrderedSet(array: feed.map { local in
+					let feed = CoreDataFeedImage(context: context)
+					feed.id = local.id
+					feed.imageDescription = local.description
+					feed.location = local.location
+					feed.url = local.url
+					return feed
+				})
+				try context.save()
+				completion(nil)
+			} catch {
+				completion(error)
 			}
 		}
 	}
