@@ -33,14 +33,14 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
-		//        let storeToInsert = makeSUT()
-		//        let storeToLoad = makeSUT()
-		//        let feed = uniqueImageFeed()
-		//        let timestamp = Date()
-		//
-		//        insert((feed, timestamp), to: storeToInsert)
-		//
-		//        expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
+		        let storeToInsert = makeSUT()
+		        let storeToLoad = makeSUT()
+		        let feed = uniqueImageFeed()
+		        let timestamp = Date()
+		
+		        insert((feed, timestamp), to: storeToInsert)
+		
+		        expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
 	}
 	
 	func test_insert_overridesFeedInsertedOnAnotherInstance() {
@@ -72,7 +72,7 @@ class FeedStoreIntegrationTests: XCTestCase {
 	// - MARK: Helpers
 	
 	private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FeedStore {
-		let storeUrl = URL(fileURLWithPath: "/dev/null")
+		let storeUrl = URL(fileURLWithPath: "/dev/null1")
 		let sut = try! CoreDataFeedStore(storeURL: storeUrl)
 		//trackForMemoryLeak(sut, file: file, line: line)
 		return sut
