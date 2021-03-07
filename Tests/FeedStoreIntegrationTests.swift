@@ -7,13 +7,6 @@ import FeedStoreChallenge
 
 class FeedStoreIntegrationTests: XCTestCase {
 	
-	//  ***********************
-	//
-	//  Uncomment and implement the following tests if your
-	//  implementation persists data to disk (e.g., CoreData/Realm)
-	//
-	//  ***********************
-	
 	override func setUp() {
 		super.setUp()
 		
@@ -27,46 +20,46 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	func test_retrieve_deliversEmptyOnEmptyCache() {
-		        let sut = makeSUT()
+		let sut = makeSUT()
 		
-		        expect(sut, toRetrieve: .empty)
+		expect(sut, toRetrieve: .empty)
 	}
 	
 	func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
-		        let storeToInsert = makeSUT()
-		        let storeToLoad = makeSUT()
-		        let feed = uniqueImageFeed()
-		        let timestamp = Date()
+		let storeToInsert = makeSUT()
+		let storeToLoad = makeSUT()
+		let feed = uniqueImageFeed()
+		let timestamp = Date()
 		
-		        insert((feed, timestamp), to: storeToInsert)
+		insert((feed, timestamp), to: storeToInsert)
 		
-		        expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
+		expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
 	}
 	
 	func test_insert_overridesFeedInsertedOnAnotherInstance() {
-		        let storeToInsert = makeSUT()
-		        let storeToOverride = makeSUT()
-		        let storeToLoad = makeSUT()
+		let storeToInsert = makeSUT()
+		let storeToOverride = makeSUT()
+		let storeToLoad = makeSUT()
 		
-		        insert((uniqueImageFeed(), Date()), to: storeToInsert)
+		insert((uniqueImageFeed(), Date()), to: storeToInsert)
 		
-		        let latestFeed = uniqueImageFeed()
-		        let latestTimestamp = Date()
-		        insert((latestFeed, latestTimestamp), to: storeToOverride)
+		let latestFeed = uniqueImageFeed()
+		let latestTimestamp = Date()
+		insert((latestFeed, latestTimestamp), to: storeToOverride)
 		
-		        expect(storeToLoad, toRetrieve: .found(feed: latestFeed, timestamp: latestTimestamp))
+		expect(storeToLoad, toRetrieve: .found(feed: latestFeed, timestamp: latestTimestamp))
 	}
 	
 	func test_delete_deletesFeedInsertedOnAnotherInstance() {
-		        let storeToInsert = makeSUT()
-		        let storeToDelete = makeSUT()
-		        let storeToLoad = makeSUT()
+		let storeToInsert = makeSUT()
+		let storeToDelete = makeSUT()
+		let storeToLoad = makeSUT()
 		
-		        insert((uniqueImageFeed(), Date()), to: storeToInsert)
+		insert((uniqueImageFeed(), Date()), to: storeToInsert)
 		
-		        deleteCache(from: storeToDelete)
+		deleteCache(from: storeToDelete)
 		
-		        expect(storeToLoad, toRetrieve: .empty)
+		expect(storeToLoad, toRetrieve: .empty)
 	}
 	
 	// - MARK: Helpers
@@ -74,7 +67,7 @@ class FeedStoreIntegrationTests: XCTestCase {
 	private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FeedStore {
 		let storeUrl = URL(fileURLWithPath: "/dev/null1")
 		let sut = try! CoreDataFeedStore(storeURL: storeUrl)
-		//trackForMemoryLeak(sut, file: file, line: line)
+		trackForMemoryLeak(sut, file: file, line: line)
 		return sut
 	}
 	
@@ -90,4 +83,12 @@ class FeedStoreIntegrationTests: XCTestCase {
 		try? FileManager.default.removeItem(at: URL(fileURLWithPath: "/dev/null1"))
 	}
 	
+}
+
+extension XCTestCase {
+	func trackForMemoryLeak(_ instance: AnyObject, file: StaticString = #file, line: UInt = #line){
+		addTeardownBlock { [weak instance] in
+			XCTAssertNil(instance, "Instance should have deallocated. Possible memory leak",file: file, line: line)
+		}
+	}
 }
