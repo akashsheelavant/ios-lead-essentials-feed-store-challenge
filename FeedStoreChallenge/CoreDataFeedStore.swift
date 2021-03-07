@@ -41,7 +41,7 @@ public class CoreDataFeedStore: FeedStore {
 			do {
 				let cache = CoreDataCache(context: context)
 				cache.timeStamp = timestamp
-				cache.feed = NSSet(array: feed.map { local in
+				cache.feed = NSOrderedSet(array: feed.map { local in
 					let feed = CoreDataFeedImage(context: context)
 					feed.id = local.id
 					feed.imageDescription = local.description
