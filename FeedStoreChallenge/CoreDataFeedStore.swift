@@ -35,31 +35,20 @@ public class CoreDataFeedStore: FeedStore {
 		let context = self.context
 		context.perform {
 			do {
-				let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
-				request.returnsObjectsAsFaults = false
-				if let cache = try context.fetch(request).first {
-					context.delete(cache)
-					completion(nil)
-				} else {
-					completion(nil)
-				}
+				try self.deleteCache()
+				completion(nil)
 			} catch  {
 				completion(nil)
 			}
 		}
 	}
 
-	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {		
+	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
 		let context = self.context
 		context.perform {
 			do {
 				
-				let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
-				request.returnsObjectsAsFaults = false
-				if let foundCache = try context.fetch(request).first {
-					context.delete(foundCache)
-				}
-				
+				try self.deleteCache()				
 				let cache = CoreDataCache(context: context)
 				cache.timeStamp = timestamp
 				cache.feed = NSOrderedSet(array: feed.map { local in
@@ -94,6 +83,18 @@ public class CoreDataFeedStore: FeedStore {
 			} catch {
 				completion(.failure(error))
 			}
+		}
+	}
+	
+	private func fetchCache() throws -> CoreDataCache? {
+		let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
+		request.returnsObjectsAsFaults = false
+		return try context.fetch(request).first
+	}
+	
+	private func deleteCache() throws {
+		if let cache = try fetchCache() {
+			context.delete(cache)
 		}
 	}
 }
