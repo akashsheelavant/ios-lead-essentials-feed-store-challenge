@@ -38,7 +38,7 @@ public class CoreDataFeedStore: FeedStore {
 				try self.deleteCache()
 				completion(nil)
 			} catch  {
-				completion(nil)
+				completion(error)
 			}
 		}
 	}
