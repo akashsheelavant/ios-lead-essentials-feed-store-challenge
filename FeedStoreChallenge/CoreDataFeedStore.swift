@@ -47,7 +47,6 @@ public class CoreDataFeedStore: FeedStore {
 		let context = self.context
 		context.perform {
 			do {
-				
 				try self.deleteCache()				
 				let cache = CoreDataCache(context: context)
 				cache.timeStamp = timestamp
@@ -71,9 +70,7 @@ public class CoreDataFeedStore: FeedStore {
 		let context = self.context
 		context.perform {
 			do {
-				let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
-				request.returnsObjectsAsFaults = false
-				if let cache = try context.fetch(request).first {
+				if let cache = try self.fetchCache() {
 					let feed = cache.feed?.compactMap { $0 as? CoreDataFeedImage }
 						.map { LocalFeedImage(id: $0.id!, description: $0.imageDescription, location: $0.location, url: $0.url!) }
 					completion(.found(feed: feed!, timestamp: cache.timeStamp!))
@@ -87,7 +84,7 @@ public class CoreDataFeedStore: FeedStore {
 	}
 	
 	private func fetchCache() throws -> CoreDataCache? {
-		let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
+		let request = NSFetchRequest<CoreDataCache>(entityName: "CoreDataCache")
 		request.returnsObjectsAsFaults = false
 		return try context.fetch(request).first
 	}
