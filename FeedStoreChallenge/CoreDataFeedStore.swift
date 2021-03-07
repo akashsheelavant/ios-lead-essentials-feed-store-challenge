@@ -10,12 +10,12 @@ import Foundation
 import CoreData
 
 public class CoreDataFeedStore: FeedStore {
-
-	private let modelName = "CoreDataFeedStoreModel"
+	
 	private let context: NSManagedObjectContext
 
 	public init(storeURL: URL) throws {
 
+		let modelName = "CoreDataFeedStoreModel"
 		guard let modelUrl = Bundle(for: CoreDataFeedStore.self).url(forResource: modelName, withExtension: "momd"),
 			  let managedObjectModel = NSManagedObjectModel(contentsOf: modelUrl) else { throw NSError() }
 
