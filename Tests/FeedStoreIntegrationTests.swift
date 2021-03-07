@@ -27,9 +27,9 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	func test_retrieve_deliversEmptyOnEmptyCache() {
-		//        let sut = makeSUT()
-		//
-		//        expect(sut, toRetrieve: .empty)
+		        let sut = makeSUT()
+		
+		        expect(sut, toRetrieve: .empty)
 	}
 	
 	func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
@@ -71,8 +71,11 @@ class FeedStoreIntegrationTests: XCTestCase {
 	
 	// - MARK: Helpers
 	
-	private func makeSUT() -> FeedStore {
-		fatalError("Must be implemented")
+	private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FeedStore {
+		let storeUrl = URL(fileURLWithPath: "/dev/null")
+		let sut = try! CoreDataFeedStore(storeURL: storeUrl)
+		//trackForMemoryLeak(sut, file: file, line: line)
+		return sut
 	}
 	
 	private func setupEmptyStoreState() {
