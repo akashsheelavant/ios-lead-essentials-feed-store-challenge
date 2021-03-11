@@ -27,6 +27,7 @@ public class CoreDataFeedStore: FeedStore {
 		context.perform {
 			do {
 				try self.deleteCache()
+				try context.save()
 				completion(nil)
 			} catch  {
 				completion(error)
@@ -38,7 +39,7 @@ public class CoreDataFeedStore: FeedStore {
 		let context = self.context
 		context.perform {
 			do {
-				try self.deleteCache()				
+				try self.deleteCache()
 				let cache = CoreDataCache(context: context)
 				cache.timeStamp = timestamp
 				cache.feed = NSOrderedSet(array: feed.map { local in
@@ -88,7 +89,6 @@ public class CoreDataFeedStore: FeedStore {
 	private func deleteCache() throws {
 		if let cache = try fetchCache() {
 			context.delete(cache)
-			try context.save()
 		}
 	}
 }
