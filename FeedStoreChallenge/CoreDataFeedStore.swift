@@ -15,18 +15,9 @@ public class CoreDataFeedStore: FeedStore {
 	
 	public init(storeURL: URL) throws {
 		
-		let modelName = "CoreDataFeedStoreModel"
-		guard let modelUrl = Bundle(for: CoreDataFeedStore.self).url(forResource: modelName, withExtension: "momd"),
-			  let managedObjectModel = NSManagedObjectModel(contentsOf: modelUrl) else { throw NSError() }
-		
-		let description = NSPersistentStoreDescription(url: storeURL)
-		let container = NSPersistentContainer(name: modelName, managedObjectModel: managedObjectModel)
-		container.persistentStoreDescriptions = [description]
-		
-		var loadError: Swift.Error?
-		container.loadPersistentStores { loadError = $1 }
-		try loadError.map { throw $0 }
-		
+		let container = try NSPersistentContainer.load(modelName: "CoreDataFeedStoreModel",
+													   url: storeURL,
+													   in: Bundle(for: CoreDataFeedStore.self))
 		context = container.newBackgroundContext()
 	}
 	
@@ -72,8 +63,12 @@ public class CoreDataFeedStore: FeedStore {
 			do {
 				if let cache = try self.fetchCache(),
 				   let feed = cache.feed {
-					let feed = feed.compactMap { $0 as? CoreDataFeedImage }
-						.map { LocalFeedImage(id: $0.id ?? UUID(), description: $0.imageDescription, location: $0.location, url: $0.url ?? URL(string: "")!) }
+					let feed = feed
+						.compactMap { $0 as? CoreDataFeedImage }
+						.map { LocalFeedImage(id: $0.id ?? UUID(),
+											  description: $0.imageDescription,
+											  location: $0.location,
+											  url: $0.url ?? URL(string: "")!) }
 					completion(.found(feed: feed, timestamp: cache.timeStamp ?? Date()))
 				} else {
 					completion(.empty)
