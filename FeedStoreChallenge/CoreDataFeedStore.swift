@@ -41,7 +41,7 @@ public class CoreDataFeedStore: FeedStore {
 			do {
 				try self.deleteCache()
 				let cache = CoreDataCache(context: context)
-				cache.timeStamp = timestamp
+				cache.timestamp = timestamp
 				cache.feed = NSOrderedSet(array: feed.map { local in
 					let feed = CoreDataFeedImage(context: context)
 					feed.id = local.id
@@ -70,7 +70,7 @@ public class CoreDataFeedStore: FeedStore {
 											  description: $0.imageDescription,
 											  location: $0.location,
 											  url: $0.url ?? URL(string: "")!) }
-					completion(.found(feed: feed, timestamp: cache.timeStamp ?? Date()))
+					completion(.found(feed: feed, timestamp: cache.timestamp ?? Date()))
 				} else {
 					completion(.empty)
 				}
