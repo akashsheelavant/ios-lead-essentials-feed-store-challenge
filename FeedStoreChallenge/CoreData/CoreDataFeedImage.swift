@@ -15,3 +15,12 @@ class CoreDataFeedImage: NSManagedObject {
 	@NSManaged var url: URL
 	@NSManaged var cache: CoreDataCache
 }
+
+extension CoreDataFeedImage {
+	func from(_ localFeedImage: LocalFeedImage) {
+		id = localFeedImage.id
+		imageDescription = localFeedImage.description
+		location = localFeedImage.location
+		url = localFeedImage.url
+	}
+}

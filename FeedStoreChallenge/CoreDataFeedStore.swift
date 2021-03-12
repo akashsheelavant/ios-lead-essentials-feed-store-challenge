@@ -44,10 +44,7 @@ public class CoreDataFeedStore: FeedStore {
 				cache.timestamp = timestamp
 				cache.feed = NSOrderedSet(array: feed.map { local in
 					let feed = CoreDataFeedImage(context: context)
-					feed.id = local.id
-					feed.imageDescription = local.description
-					feed.location = local.location
-					feed.url = local.url
+					feed.from(local)
 					return feed
 				})
 				try context.save()
@@ -63,13 +60,7 @@ public class CoreDataFeedStore: FeedStore {
 		context.perform {
 			do {
 				if let cache = try self.fetchCache() {
-					let feed = cache.feed
-						.compactMap { $0 as? CoreDataFeedImage }
-						.map { LocalFeedImage(id: $0.id,
-											  description: $0.imageDescription,
-											  location: $0.location,
-											  url: $0.url) }
-					completion(.found(feed: feed, timestamp: cache.timestamp))
+					completion(.found(feed: cache.localFeed, timestamp: cache.timestamp))
 				} else {
 					completion(.empty)
 				}

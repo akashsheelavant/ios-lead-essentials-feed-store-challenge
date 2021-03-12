@@ -12,3 +12,14 @@ class CoreDataCache: NSManagedObject {
 	@NSManaged var timestamp: Date
 	@NSManaged var feed: NSOrderedSet
 }
+
+extension CoreDataCache {
+	var localFeed: [LocalFeedImage] {
+		feed.compactMap { $0 as? CoreDataFeedImage }
+			.map { LocalFeedImage(id: $0.id,
+								  description: $0.imageDescription,
+								  location: $0.location,
+								  url: $0.url)
+			}
+	}
+}
